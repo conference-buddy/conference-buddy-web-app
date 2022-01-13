@@ -7,6 +7,27 @@ require("dotenv").config({
 module.exports = {
   /* Your site config here */
   plugins: [
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `pages`,
+        path: `${__dirname}/content/`,
+      },
+    },
+    {
+      resolve: `gatsby-transformer-remark`,
+      options: {
+        plugins: [
+          {
+            resolve: `gatsby-remark-images`,
+            options: {
+              maxWidth: 1200,
+              linkImagesToOriginal: false,
+            },
+          },
+        ],
+      },
+    },
     "gatsby-plugin-sass",
     "gatsby-plugin-image",
     "gatsby-plugin-sharp",

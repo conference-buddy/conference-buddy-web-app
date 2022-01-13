@@ -1,3 +1,4 @@
+const { createFilePath } = require("gatsby-source-filesystem")
 const { createClient } = require("@supabase/supabase-js")
 
 const supabaseUrl = process.env.GATSBY_APP_SUPABASE_URL || "empty"
@@ -45,4 +46,24 @@ exports.sourceNodes = async ({
     const node = Object.assign({}, user, nodeMeta)
     createNode(node)
   })
+}
+
+exports.onCreateNode = ({ node, actions, getNode }) => {
+  const { createNodeField } = actions
+
+  if (node.internal.type === "MarkdownRemark") {
+    const slug = createFilePath({ node, getNode })
+
+    createNodeField({
+      name: "slug",
+      node,
+      value: slug,
+    })
+  }
+}
+
+exports.onCreatePage = async ({ page, actions: { deletePage } }) => {
+  if (page.context?.fields__slug?.includes("/_")) {
+    deletePage(page)
+  }
 }
