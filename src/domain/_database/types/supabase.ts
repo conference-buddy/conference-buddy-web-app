@@ -237,6 +237,7 @@ export interface paths {
           email?: parameters["rowFilter.profiles.email"];
           created_at?: parameters["rowFilter.profiles.created_at"];
           about_text?: parameters["rowFilter.profiles.about_text"];
+          avatar_url?: parameters["rowFilter.profiles.avatar_url"];
           /** Filtering Columns */
           select?: parameters["select"];
           /** Ordering */
@@ -295,6 +296,7 @@ export interface paths {
           email?: parameters["rowFilter.profiles.email"];
           created_at?: parameters["rowFilter.profiles.created_at"];
           about_text?: parameters["rowFilter.profiles.about_text"];
+          avatar_url?: parameters["rowFilter.profiles.avatar_url"];
         };
         header: {
           /** Preference */
@@ -317,6 +319,7 @@ export interface paths {
           email?: parameters["rowFilter.profiles.email"];
           created_at?: parameters["rowFilter.profiles.created_at"];
           about_text?: parameters["rowFilter.profiles.about_text"];
+          avatar_url?: parameters["rowFilter.profiles.avatar_url"];
         };
         body: {
           /** profiles */
@@ -625,6 +628,8 @@ export interface definitions {
     created_at: string;
     /** Format: text */
     about_text?: string;
+    /** Format: text */
+    avatar_url?: string;
   };
   /** @description Social links for user profiles */
   profiles_social_links: {
@@ -762,6 +767,8 @@ export interface parameters {
   "rowFilter.profiles.created_at": string;
   /** Format: text */
   "rowFilter.profiles.about_text": string;
+  /** Format: text */
+  "rowFilter.profiles.avatar_url": string;
   /** @description profiles_social_links */
   "body.profiles_social_links": definitions["profiles_social_links"];
   /** Format: uuid */
