@@ -1,43 +1,65 @@
-import React, { ReactElement, useState } from "react"
-import { supabase } from "../../../domain/_database/supabaseClient"
+import React, { ChangeEvent, ReactElement, useState } from "react"
+import {
+  createImageObject,
+  ImageObject,
+} from "../../services/storage/image-upload-helper"
 
-function ImageUpload(): ReactElement {
-  const [file, setFile] = useState<File | null>(null)
+type ImageUploadProps = {
+  onFileAdded: (imageObject: ImageObject) => void
+  onFileRemoved: () => void
+  imagePublicUrl: string | null
+}
 
-  async function testOnSubmit() {
-    if (file) {
-      await supabase.storage
-        .from("avatars")
-        .upload(`public/${file.name}`, file, {
-          cacheControl: "3600",
-          upsert: false,
-        })
+function ImageUpload(props: ImageUploadProps): ReactElement {
+  const [currentImage, setCurrentImage] = useState<ImageObject | null>(null)
+
+  const handleFilePicker = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = (e.target as HTMLInputElement).files
+
+    if (files && files.length > 0) {
+      const imageObject = createImageObject(files)
+
+      if (imageObject && imageObject.name) {
+        setCurrentImage({ ...imageObject })
+
+        props.onFileAdded(imageObject)
+      }
+    }
+  }
+
+  const handleDeleteImage = async () => {
+    if (props.onFileRemoved) {
+      props.onFileRemoved()
+      setCurrentImage(null)
     }
   }
 
   return (
-    <form
-      onSubmit={event => {
-        event.preventDefault()
-        testOnSubmit()
-      }}
-    >
-      <label htmlFor="avatar">Choose a profile picture:</label>
-      <input
-        /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-        // @ts-ignore
-        onChange={event => setFile(event.target.files[0])}
-        type="file"
-        id="avatar"
-        name="avatar"
-        accept="image/png, image/jpeg, image/svg+xml"
-      />
-      <div className="text-end mb-3">
-        <button type="submit" className="btn col-12 btn-confbuddy-green">
-          Submit Form
-        </button>
-      </div>
-    </form>
+    <>
+      {!currentImage?.dataUrl && !props.imagePublicUrl && (
+        <label>
+          <input
+            onChange={handleFilePicker}
+            type="file"
+            id="avatar"
+            name="avatar"
+            accept="image/png, image/jpeg, image/svg+xml"
+          />
+        </label>
+      )}
+
+      {props.imagePublicUrl && props.onFileRemoved && (
+        <button onClick={handleDeleteImage}>Delete image here</button>
+      )}
+      {props.imagePublicUrl && (
+        <img
+          className="img-fluid img-thumbnail this-is-the-public-url-image"
+          alt="Avatar"
+          src={props.imagePublicUrl}
+          loading="lazy"
+        />
+      )}
+    </>
   )
 }
 

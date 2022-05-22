@@ -1,18 +1,15 @@
 import React, { ReactElement, useState } from "react"
 import { Profile } from "../../../../domain/profiles"
 import useUpdateProfile from "../../../services/hooks/profile/useUpdateProfile"
+import { UpdateAvatar } from "../../image-upload/UpdateAvatar"
 
 // @TODO implement update profile components
 function UpdateProfile({ profile }: { profile: Profile }): ReactElement {
   const [name, setName] = useState(profile.name)
-  const updateUserMutation = useUpdateProfile(
-    // eslint-disable-next-line
-    // @ts-ignore
-    {
-      id: profile.id,
-      name,
-    }
-  )
+  const updateUserMutation = useUpdateProfile({
+    ...profile,
+    name,
+  })
 
   if (updateUserMutation.isSuccess) {
     alert("success")
@@ -50,6 +47,12 @@ function UpdateProfile({ profile }: { profile: Profile }): ReactElement {
           Submit Form
         </button>
       </form>
+      <div className="col-2 mt-5">
+        <UpdateAvatar
+          profileId={profile.id}
+          avatarUrl={profile.avatar_url || null}
+        />
+      </div>
     </div>
   )
 }
